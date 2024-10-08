@@ -1,7 +1,10 @@
 import yt_dlp
 import os
 
-def download_youtube_audio(url, output_dir='../data/audio'):
+TITLE = "mike"
+VIDEO_URL = "https://www.youtube.com/watch?v=zNjhzdvAEUI"
+
+def download_youtube_audio(url, output_dir=f'../data/audio/{TITLE}'):
     # Ensure the output directory exists
     os.makedirs(output_dir, exist_ok=True)
 
@@ -10,18 +13,15 @@ def download_youtube_audio(url, output_dir='../data/audio'):
         'format': 'bestaudio/best',
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
+            'preferredcodec': 'wav',
             'preferredquality': '192',
         }],
-        'outtmpl': os.path.join(output_dir, '%(title)s.%(ext)s'),
+        'outtmpl': os.path.join(output_dir, f"full.%(ext)s"),
     }
 
-    # Download the audio
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
 
 if __name__ == "__main__":
-    
-    video_url = "https://www.youtube.com/watch?v=zNjhzdvAEUI"
-    download_youtube_audio(video_url)
-    print("Download complete. The MP3 file has been saved to the 'data' directory.")
+    download_youtube_audio(VIDEO_URL)
+    print("Download complete. The WAV file has been saved to the 'data' directory.")
