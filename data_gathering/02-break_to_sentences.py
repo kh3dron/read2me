@@ -5,7 +5,7 @@ from pydub.silence import split_on_silence
 
 # Load the audio file
 TITLE = "mike"
-audio_path = f"../data/audio/{TITLE}/full.wav"
+audio_path = f"../data/audio/{TITLE}/full_mono.wav"
 audio = AudioSegment.from_wav(audio_path)
 
 # Define parameters for splitting

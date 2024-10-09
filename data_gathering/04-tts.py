@@ -22,8 +22,8 @@ output_path = os.path.dirname(os.path.abspath(__file__))
 # You can also use a simple Dict to define the dataset and pass it to your custom formatter.
 dataset_config = BaseDatasetConfig(
     formatter="ljspeech",
-    meta_file_train="../metadata.txt",
-    path=os.path.join(output_path, "../data/audio/mike/wavs/")
+    meta_file_train="metadata.txt",
+    path=os.path.join(output_path, "../data/audio/mike/")
 )
 
 # Print the number of files in the directory
@@ -32,20 +32,20 @@ print(f"Number of files: {len(os.listdir(os.path.join(output_path, '../data/audi
 # INITIALIZE THE TRAINING CONFIGURATION
 # Configure the model. Every config class inherits the BaseTTSConfig.
 config = GlowTTSConfig(
-    batch_size=32,
-    eval_batch_size=16,
+    batch_size=8,  # was 32
+    eval_batch_size=4,  # was 16
     num_loader_workers=4,
     num_eval_loader_workers=4,
-    run_eval=True,
+    run_eval=False,
     test_delay_epochs=-1,
-    epochs=1000,
+    epochs=2000,
     text_cleaner="phoneme_cleaners",
     use_phonemes=True,
     phoneme_language="en-us",
     phoneme_cache_path=os.path.join(output_path, "phoneme_cache"),
     print_step=25,
     print_eval=False,
-    mixed_precision=True,
+    mixed_precision=False,
     output_path=output_path,
     datasets=[dataset_config],
 )
