@@ -36,8 +36,7 @@ def extract_chapters(epub_path, output_dir):
     print(f"Extracted {chapter_count} chapters.")
 
 # Example usage
-#book_title = 'steve_jobs'
-book_title = 'neuromancer'
-epub_path = f'epubs/{book_title}.epub'
-output_dir = f'chapters/{book_title}'
+book_title = 'the_fountainhead'
+epub_path = f'../data/epubs/{book_title}.epub'
+output_dir = f'../data/split_books/{book_title}'
 extract_chapters(epub_path, output_dir)

@@ -21,3 +21,11 @@ Step 2, what would be way cooler: clone a voice
 # BUGS
 
 - all books have uniue structures to chapter headers - some manual cleaning is needed
+
+
+
+
+# USAGE STEPS
+- get name/clip pair and load into voice_clips.json
+- 00-download-and-split.py
+- 04-tts.py

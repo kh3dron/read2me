@@ -1,1 +1,7 @@
 data/
+
+trained_models/
+generations/
+
+data_gathering/run*
+TTS/

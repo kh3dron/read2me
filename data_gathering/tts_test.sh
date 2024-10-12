@@ -1,1 +1,0 @@
-tts --text "Text for TTS" --model_name "tts_models/en/ljspeech/glow-tts" --out_path speech.wav
