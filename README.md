@@ -33,3 +33,7 @@ Step 2, what would be way cooler: clone a voice
   - run tensorboard.sh to watch training
 - test_model.sh to get outputs 
 
+
+
+# TODO 
+- more API endpoints 

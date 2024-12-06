@@ -1,0 +1,16 @@
+[Unit]
+Description=tts-api
+After=network.target
+
+[Service]
+User=tristan
+WorkingDirectory=/home/tristan/Documents/Github/self-apps/read2me
+Environment="PATH=/home/tristan/miniconda3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+ExecStart=/bin/bash -c 'source /home/tristan/miniconda3/etc/profile.d/conda.sh && conda activate myenv && python app.py'
+Restart=always
+RestartSec=3
+StandardOutput=append:/var/log/tts-api.log
+StandardError=append:/var/log/tts-api.error.log
+
+[Install]
+WantedBy=multi-user.target

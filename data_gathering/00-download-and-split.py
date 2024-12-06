@@ -117,61 +117,60 @@ def transcribe_audio(file_path):
     return transcript
 
 
-def transcribe_file(wav_file, wav_dir, existing_lines):
+def transcribe_file(wav_file, wav_dir, existing_data):
     file_path = os.path.join(wav_dir, wav_file)
     base_name = os.path.splitext(wav_file)[0]
-    new_line = f"{base_name}|"
 
     # Check if the file already exists in the metadata
-    for line in existing_lines:
-        if line.startswith(f"{base_name}|"):
-            return None, f"[*] Skipped (already exists): {wav_file}"
+    if base_name in existing_data:
+        return None, f"[*] Skipped (already exists): {wav_file}"
 
     # If not found, proceed with transcription
-    # TODO store failures to transcribe in the same way
     transcript = transcribe_audio(file_path)
     if transcript != "Could not understand audio":
-        new_line += f"{transcript}\n"
-        return new_line, f"[+] Transcribed and added: {wav_file}"
+        return (base_name, transcript), f"[+] Transcribed and added: {wav_file}"
     else:
         return None, f"[!] Failed transcription for {wav_file}"
 
 
 def transcribe_directory(title):
     wav_dir = f"../data/audio/{title}/wavs"
-    output_file = f"../data/audio/{title}/metadata.txt"
+    output_file = f"../data/audio/{title}/metadata.json"
 
     # Get all WAV files in the directory and sort them
     wav_files = sorted([f for f in os.listdir(wav_dir) if f.endswith(".wav")])
 
-    # Read existing lines from the file if it exists
-    existing_lines = set()
+    # Read existing data from the JSON file if it exists
+    existing_data = {}
     if os.path.exists(output_file):
         with open(output_file, "r") as in_file:
-            existing_lines = set(in_file.readlines())
+            existing_data = json.load(in_file)
 
     with ThreadPoolExecutor(max_workers=10) as executor:
         futures = []
         for wav_file in wav_files:
-            future = executor.submit(transcribe_file, wav_file, wav_dir, existing_lines)
+            future = executor.submit(transcribe_file, wav_file, wav_dir, existing_data)
             futures.append(future)
 
-        new_lines = []
+        new_entries = {}
         for future in as_completed(futures):
             result, message = future.result()
             if result:
-                new_lines.append(result)
+                base_name, transcript = result
+                new_entries[base_name] = transcript
             print(message)
 
-    # Read all existing lines and add new lines
-    all_lines = list(existing_lines) + new_lines
+    # Combine existing and new entries
+    all_entries = {**existing_data, **new_entries}
 
-    # Sort all lines by transcript length
-    sorted_lines = sorted(all_lines, key=lambda x: len(x.split("|")[1]))
+    # Sort entries by transcript length
+    sorted_entries = dict(
+        sorted(all_entries.items(), key=lambda x: len(x[1]))
+    )
 
-    # Write sorted lines back to the file
+    # Write sorted entries back to the file
     with open(output_file, "w") as out_file:
-        out_file.writelines(sorted_lines)
+        json.dump(sorted_entries, out_file, indent=4)
 
     print(
         f"Finished processing. Results sorted by transcript length written to {output_file}"

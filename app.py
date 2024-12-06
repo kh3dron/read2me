@@ -41,7 +41,7 @@ def name_tracks(name):
 #TODO send as json 
 @app.route("/api/v1/<name>/transcriptions", methods=["GET"])
 def name_transcriptions(name):
-    return send_file(f"data/audio/{name}/metadata.txt")
+    return send_file(f"data/audio/{name}/metadata.json")
 
 # # get track
 # @app.route("/api/v1/<name>/<track>", methods=["GET"])
