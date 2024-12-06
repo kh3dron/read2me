@@ -27,5 +27,9 @@ Step 2, what would be way cooler: clone a voice
 
 # USAGE STEPS
 - get name/clip pair and load into voice_clips.json
-- 00-download-and-split.py
-- 04-tts.py
+- run through data_gathering dir to generate dataset
+- finetuning/finetune.sh
+  - adjust hyperparams in tacotron.py
+  - run tensorboard.sh to watch training
+- test_model.sh to get outputs 
+

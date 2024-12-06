@@ -1,7 +1,9 @@
+**.wav
+
 data/
+finetuning/phoneme_cache/
+generations/
+output_audio/
+TTS/
 
 trained_models/
-generations/
-
-data_gathering/run*
-TTS/

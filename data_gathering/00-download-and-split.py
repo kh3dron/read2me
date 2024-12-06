@@ -9,6 +9,9 @@ import os
 import speech_recognition as sr
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pydub.silence import split_on_silence
+import json
+import sys
+import argparse
 
 """
 This program takes two inputs and constructs this directory structure:
@@ -20,13 +23,24 @@ This program takes two inputs and constructs this directory structure:
     metadata.txt  (sorted by transcript length)
 """
 
-TITLE = "john_stewart"
-VIDEO_URL = "https://www.youtube.com/watch?v=HX-5jmQplIo"
+def update_voice_clips_json(title, url):
+    json_path = 'voice_clips.json'
+    try:
+        with open(json_path, 'r') as f:
+            voice_clips = json.load(f)
+    except FileNotFoundError:
+        voice_clips = {}
 
-TITLE = "mike2"
-VIDEO_URL = "https://www.youtube.com/watch?v=c8CXe7PvEXo"
+    if title not in voice_clips:
+        voice_clips[title] = []
+    if url not in voice_clips[title]:
+        voice_clips[title].append(url)
 
-def download_youtube_audio(url, output_dir=f"../data/audio/{TITLE}"):
+    with open(json_path, 'w') as f:
+        json.dump(voice_clips, f, indent=4)
+
+def download_youtube_audio(url, title):
+    output_dir=f"../data/audio/{title}"
     # Ensure the output directory exists
     os.makedirs(output_dir, exist_ok=True)
 
@@ -117,7 +131,7 @@ def transcribe_file(wav_file, wav_dir, existing_lines):
     # TODO store failures to transcribe in the same way
     transcript = transcribe_audio(file_path)
     if transcript != "Could not understand audio":
-        new_line += f"{transcript}|{transcript}\n"
+        new_line += f"{transcript}\n"
         return new_line, f"[+] Transcribed and added: {wav_file}"
     else:
         return None, f"[!] Failed transcription for {wav_file}"
@@ -165,7 +179,17 @@ def transcribe_directory(title):
 
 
 def main():
-    download_youtube_audio(VIDEO_URL)
+    parser = argparse.ArgumentParser(description="Download and process YouTube audio")
+    parser.add_argument("title", help="Title for the audio clip")
+    parser.add_argument("url", help="YouTube URL of the video")
+    args = parser.parse_args()
+
+    global TITLE, VIDEO_URL
+    TITLE = args.title
+    VIDEO_URL = args.url
+
+    update_voice_clips_json(TITLE, VIDEO_URL)
+    download_youtube_audio(VIDEO_URL, TITLE)
     break_into_sentences(TITLE)
     transcribe_directory(TITLE)
 

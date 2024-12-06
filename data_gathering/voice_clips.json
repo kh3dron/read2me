@@ -2,10 +2,16 @@
     "mike": [
         "https://www.youtube.com/watch?v=zNjhzdvAEUI"
     ],
+    "mike2": [
+        "url=https://www.youtube.com/watch?v=zNjhzdvAEUI"
+    ],
     "john_stewart": [
         "https://www.youtube.com/watch?v=HX-5jmQplIo"
     ],
     "steve_jobs": [
         "https://www.youtube.com/watch?v=kYfNvmF0Bqw"
+    ],
+    "anne_hathaway": [
+        "https://www.youtube.com/watch?v=wZFblGM42Mw"
     ]
 }
