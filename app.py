@@ -119,8 +119,9 @@ def retrieve(task_id):
 
 @app.route("/api/v1/retrieve")
 def retrieve_all():
-    files = os.listdir("output")
-    return jsonify(files)
+    with open("generation_log.json", "r") as f:
+        log_data = json.load(f)
+    return jsonify(log_data)
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=9930)

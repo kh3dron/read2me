@@ -8,3 +8,4 @@ TTS/
 
 trained_models/
 output/
+generation_log.json

@@ -1,5 +1,7 @@
 from celery import Celery
 import os
+import subprocess
+import shlex
 
 # Initialize Celery with Redis as broker
 celery = Celery('tasks', broker='redis://localhost:6379/0')
@@ -12,8 +14,14 @@ def clone_voice(self, name, source_filename, input_text):
     # Create output directory if it doesn't exist
     os.makedirs("output", exist_ok=True)
     
-    # Run the cloning script
-    os.system(f"python3 endpoints/simple-clone.py {source_wav} {input_text} {self.request.id}")
+    # Use subprocess.run instead of os.system
+    subprocess.run([
+        "python3",
+        "endpoints/simple-clone.py",
+        source_wav,
+        input_text,
+        self.request.id
+    ])
     
     return {
         'task_id': self.request.id,

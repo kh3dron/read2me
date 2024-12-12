@@ -1,4 +1,0 @@
-beautifulsoup4==4.12.3
-EbookLib==0.18
-gtts==2.5.1
-pydub==0.25.1
