@@ -163,9 +163,9 @@ def transcribe_directory(title):
     # Combine existing and new entries
     all_entries = {**existing_data, **new_entries}
 
-    # Sort entries by transcript length
+    # Sort entries by wav filename
     sorted_entries = dict(
-        sorted(all_entries.items(), key=lambda x: len(x[1]))
+        sorted(all_entries.items(), key=lambda x: int(x[0].split("_")[1]))
     )
 
     # Write sorted entries back to the file
