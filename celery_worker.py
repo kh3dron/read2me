@@ -17,7 +17,7 @@ def clone_voice(self, name, source_filename, input_text):
     # Use subprocess.run instead of os.system
     subprocess.run([
         "python3",
-        "endpoints/simple-clone.py",
+        "endpoints/clone-voice.py",
         source_wav,
         input_text,
         self.request.id
@@ -28,3 +28,4 @@ def clone_voice(self, name, source_filename, input_text):
         'status': 'completed',
         'output_path': output_path
     }
+

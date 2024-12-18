@@ -1,0 +1,1 @@
+nohup celery -A celery_worker worker --loglevel=INFO &
