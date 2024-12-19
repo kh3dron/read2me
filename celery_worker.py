@@ -29,3 +29,21 @@ def clone_voice(self, name, source_filename, input_text):
         'output_path': output_path
     }
 
+@celery.task(bind=True)
+def generate_tts(self, input_filename):
+    output_path = f"output/{self.request.id}.wav"
+    
+    print("!!! INPUT FILENAME ", input_filename)
+    print("!!! TASK ID ", self.request.id)
+    
+    subprocess.run([
+        "python3",
+        "endpoints/tts.py",
+        input_filename,
+        self.request.id
+    ])
+    return {
+        'task_id': self.request.id,
+        'status': 'completed',
+        'output_path': output_path
+    }

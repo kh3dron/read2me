@@ -5,7 +5,7 @@ from flask import send_file, request
 from flask_cors import CORS, cross_origin
 import json
 import requests
-from celery_worker import clone_voice
+from celery_worker import clone_voice, generate_tts
 import logging
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -35,6 +35,8 @@ def verify_password(username, password):
 @auth.login_required
 def health():
     return "<p>OK</p>"
+
+# Audio data
 
 @app.route("/api/v1/audio/names", methods=["GET"])
 @auth.login_required
@@ -88,8 +90,6 @@ def get_track(name, track):
     print(f"data/audio/{name}/wavs/{track}.wav")
     return send_file(f"data/audio/{name}/wavs/{track}.wav")
 
-# get track transcription
-
 @app.route("/api/v1/audio/<name>/<track>/transcription", methods=["GET"])
 @auth.login_required
 def get_track_transcription(name, track):
@@ -137,7 +137,28 @@ def get_clone_result(task_id):
         return send_file(output_path)
     return jsonify({"error": "File not found"}), 404
 
-# Retrieving tasks and audio generations
+# Generic transcription
+@app.route("/api/v1/tts", methods=["POST"])
+@auth.login_required
+def tts():
+    print("!!! FORM ")
+    print(request.form)
+    
+    source_filename = request.form["source_filename"]
+    book_name = request.form["book_name"]
+    full_path = f"data/split_books/{book_name}/{source_filename}"
+    
+    print("!!! FULL PATH ", full_path)
+    
+    # Launch async task
+    task = generate_tts.delay(full_path)
+    
+    return jsonify({
+        "status": "processing",
+        "task_id": task.id
+    })
+
+# Queue tasks status
 
 @app.route("/api/v1/retrieve/<task_id>")
 @auth.login_required
@@ -153,6 +174,8 @@ def retrieve_all():
     with open("generation_log.json", "r") as f:
         log_data = json.load(f)
     return jsonify(log_data)
+
+# Book data
 
 @app.route("/api/v1/books")
 @auth.login_required
@@ -185,6 +208,11 @@ def book(book_name):
     except Exception as e:
         logger.error(f"Error in book: {str(e)}")
         return jsonify({"error": str(e)}), 500
+
+@app.route("/api/v1/books/<book_name>/<chapter_name>")
+@auth.login_required
+def chapter(book_name, chapter_name):
+    return send_file(f"data/split_books/{book_name}/{chapter_name}")
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=9930)
