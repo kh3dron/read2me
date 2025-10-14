@@ -98,6 +98,14 @@ def get_track_transcription(name, track):
         metadata = json.loads(f.read())
     return jsonify(metadata[track])
 
+@app.route("/api/v1/samples/<name>")
+@auth.login_required
+def samples(name):
+    name = name.replace("_", " ")
+    name = " ".join(word.capitalize() for word in name.split(" "))
+    print(name)
+    return send_file(f"voice_samples/{name}.wav")
+
 # Voice Cloning
 
 @app.route("/api/v1/clone", methods=["POST"])
