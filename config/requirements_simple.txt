@@ -1,0 +1,8 @@
+# Simplified requirements for Read2Me CLI/Library
+torch>=2.1
+torchaudio
+TTS>=0.22.0
+soundfile>=0.12.0
+librosa>=0.10.0
+numpy>=1.24.3
+pyyaml>=6.0
